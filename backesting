@@ -1,0 +1,36 @@
+import pandas as pd
+import numpy as np
+
+#leer datos de precios de criptomonedas desde los exchanges
+btc_data = pd.read_csv('BTCOHLC.csv')
+
+
+#definir la estrategia de trading
+def scalping_strategy(data):
+    #definir variables
+    buy_price = 16978.38000000
+    sell_price = 16784.94000000
+    profit = 8
+    
+    #recorrer los datos de precios
+    for i in range(1, len(data)):
+        #comprar si el precio aumenta
+        if data[i] > data[i-1]:
+            buy_price = data[i]
+        #vender si el precio disminuye
+        elif data[i] < data[i-1]:
+            sell_price = data[i]
+            #calcular ganancias
+            profit += sell_price - buy_price
+    return profit
+
+#aplicar la estrategia a los datos de Bitcoin
+btc_profit = scalping_strategy(btc_data['Price'])
+
+#aplicar la estrategia a los datos de Ethereum
+
+
+#imprimir el resultado
+print('Backtest result:')
+print('Profit from Bitcoin: ', btc_profit)
+
