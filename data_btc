@@ -1,0 +1,40 @@
+import requests
+import pandas as pd
+import time 
+from datetime import datetime
+import matplotlib.pyplot as plt
+#Definir las variables para las fechas
+start_date = '2022-01-01' #Fecha inicial para la descarga
+end_date = '2022-12-18' #Fecha final para la descarga
+
+#Convertir las variables de fecha a formato datetime
+start_date_dt = datetime.strptime(start_date, '%Y-%m-%d')
+end_date_dt = datetime.strptime(end_date, '%Y-%m-%d')
+
+#Convertir el formato datetime a milisegundos
+startTime = int(start_date_dt.timestamp()*1000)
+endTime = int(end_date_dt.timestamp()*1000)
+
+#URL para la descarga de JSON con el OHLC de Btc 
+url = f'https://api.binance.com/api/v3/klines?symbol=BTCBUSD&interval=1d&startTime={str(startTime)}&endTime={str(endTime)}'
+
+#Realizar la solicitud para obtener el JSON
+response = requests.get(url)
+
+#Convertir el JSON a Dataframe
+data = pd.DataFrame(response.json())
+
+#Agregar nombres de columnas
+data.columns = ['open_time', 'open', 'high', 'low', 'close', 'volume', 'quote_av', 'trades', 'tb_base_av', 'tb_quote_av', 'close_time', 'date']
+
+#Eliminar columnas que no se necesitan 
+data.drop(['open_time', 'close_time'], axis=1, inplace=True)
+
+#Exportar a archivo csv
+data.to_csv('BTCOHLC.csv', index=True)
+
+#Imprimir mensaje de confirmación
+print('Archivo BTCOHLC.csv descargado con exito')
+
+
+
